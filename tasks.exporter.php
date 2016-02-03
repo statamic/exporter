@@ -14,7 +14,7 @@ class Core_exporter extends Core
      *
      * @var array
      */
-    private $migration = [];
+    private $migration = array();
 
     /**
      * Collection data
@@ -73,7 +73,7 @@ class Core_exporter extends Core
     private function createTaxonomies()
     {
         foreach ($this->c['taxonomies'] as $taxonomy_name => $terms) {
-            $taxonomy = [];
+            $taxonomy = array();
 
             // Ignore empty taxonomies. They were probably just defined in
             // settings but never actually used.
@@ -98,7 +98,7 @@ class Core_exporter extends Core
      */
     private function getCollections()
     {
-        $collections = [];
+        $collections = array();
 
         $paths = File::globRecursively(BASE_PATH . '/' . Config::get('content_root'), 'yaml');
 
@@ -223,7 +223,7 @@ class Core_exporter extends Core
      */
     private function removeUnderscores($yaml)
     {
-        $data = [];
+        $data = array();
 
         foreach ($yaml as $key => $value) {
             if (substr($key, 0, 1) === '_') {
