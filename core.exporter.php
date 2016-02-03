@@ -35,6 +35,8 @@ class Core_exporter extends Core
         $this->c = $this->getCache();
         $this->collections = $this->getCollections();
 
+        $this->createTaxonomies();
+
         foreach ($this->c['urls'] as $url => $data) {
             $key = $data['folder'] . ':' . $data['file'] . ':data';
             $data = $this->arrayGet($this->c['content'], $key);
@@ -61,6 +63,30 @@ class Core_exporter extends Core
         $cache = File::get($cache);
 
         return unserialize($cache);
+    }
+
+    /**
+     * Create taxonomies
+     *
+     * @return void
+     */
+    private function createTaxonomies()
+    {
+        foreach ($this->c['taxonomies'] as $taxonomy_name => $terms) {
+            $taxonomy = [];
+
+            // Ignore empty taxonomies. They were probably just defined in
+            // settings but never actually used.
+            if (empty($terms)) {
+                continue;
+            }
+
+            foreach ($terms as $term) {
+                $taxonomy[] = $term['name'];
+            }
+
+            $this->migration['taxonomies'][$taxonomy_name] = $taxonomy;
+        }
     }
 
     /**
