@@ -4,7 +4,7 @@ class Hooks_exporter extends Hooks
 {
     public function exporter__export()
     {
-        $migration = $this->core->migrate();
+        $migration = $this->tasks->migrate();
 
         $app = \Slim\Slim::getInstance();
 
