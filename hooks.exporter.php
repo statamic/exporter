@@ -2,7 +2,7 @@
 
 class Hooks_exporter extends Hooks
 {
-    public function exporter_export()
+    public function exporter__export()
     {
         $migration = $this->core->migrate();
 
