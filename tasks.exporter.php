@@ -1,6 +1,6 @@
 <?php
 
-class Core_exporter extends Core
+class Tasks_exporter extends Tasks
 {
     /**
      * The Cache
