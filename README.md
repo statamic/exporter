@@ -1,5 +1,5 @@
-# Statamic Exporter
-> A companion to Statamic V2's Importer.
+# Statamic Exporter ![Statamic 1.9](https://img.shields.io/badge/statamic-1.9-yellow.svg?style=flat-square)
+A companion to Statamic 2's _Importer_. Could be useful for other reasons too.
 
 ## Usage
 - Install the addon by copying the files into `_add-ons/exporter`.
