@@ -36,6 +36,8 @@ class Tasks_exporter extends Tasks
         $this->collections = $this->getCollections();
 
         $this->createTaxonomies();
+        $this->createSettings();
+        $this->createGlobals();
 
         foreach ($this->c['urls'] as $url => $data) {
             $key = $data['folder'] . ':' . $data['file'] . ':data';
@@ -115,6 +117,59 @@ class Tasks_exporter extends Tasks
         }
 
         return $collections;
+    }
+
+    /**
+     * Get Settings
+     *
+     * Get all the site settings
+     *
+     * @return array
+     */
+    private function createSettings()
+    {
+        $want = array(
+            'license_key',
+            'site_root',
+            'site_url',
+            'site_name',
+            'language',
+            'theme',
+            'date_format',
+            'time_format',
+            'timezone',
+            'content_type'
+        );
+
+        foreach ($want as $want) {
+            $this->migration['settings'][$want] = Config::get($want);
+        }
+    }
+
+    /**
+     * Get Globals & Theme Variables
+     *
+     * Create global variables from v1 globals and theme variables
+     *
+     * @return array
+     */
+    private function createGlobals()
+    {
+        $globals = array();
+
+        $site_globals = Config::getConfigPath() . '/global.yaml';
+        if (File::exists($site_globals)) {
+            $globals = array_merge($globals, YAML::parse($theme_globals));
+        }
+
+        $theme_globals = Config::getCurrentThemePath() . 'theme.yaml';
+        if (File::exists($theme_globals)) {
+            $globals = array_merge($globals, YAML::parse($theme_globals));
+        }
+
+        if (count($globals) > 0) {
+            $this->migration['globals'] = $globals;
+        }
     }
 
     /**
