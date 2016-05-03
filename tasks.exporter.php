@@ -40,17 +40,7 @@ class Tasks_exporter extends Tasks
         $this->createSettings();
         $this->createGlobals();
         $this->createFieldsets();
-
-        foreach ($this->c['urls'] as $url => $data) {
-            $key = $data['folder'] . ':' . $data['file'] . ':data';
-            $data = $this->arrayGet($this->c['content'], $key);
-
-            if ($this->isEntry($data)) {
-                $this->addEntry($data);
-            } else {
-                $this->addPage($data);
-            }
-        }
+        $this->createPagesAndEntries();
 
         return $this->migration;
     }
@@ -67,6 +57,25 @@ class Tasks_exporter extends Tasks
         $cache = File::get($cache);
 
         return unserialize($cache);
+    }
+
+    /**
+     * Create pages and entries
+     *
+     * @return void
+     */
+    private function createPagesAndEntries()
+    {
+        foreach ($this->c['urls'] as $url => $data) {
+            $key = $data['folder'] . ':' . $data['file'] . ':data';
+            $data = $this->arrayGet($this->c['content'], $key);
+
+            if ($this->isEntry($data)) {
+                $this->addEntry($data);
+            } else {
+                $this->addPage($data);
+            }
+        }
     }
 
     /**
