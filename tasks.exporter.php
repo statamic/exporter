@@ -166,16 +166,32 @@ class Tasks_exporter extends Tasks
      */
     private function createGlobals()
     {
-        $globals = array();
+        $globals = array(
+            'settings' => array(),
+            'global'   => array(),
+            'theme'    => array(),
+        );
 
-        $site_globals = Config::getConfigPath() . '/global.yaml';
-        if (File::exists($site_globals)) {
-            $globals = array_merge($globals, YAML::parse($theme_globals));
+        // Get a list of variables added to _config/settings.yaml
+        // Anything not also in the defaults will be considered a global added manually.
+        $defaults = array_keys(YAML::parseFile(Config::getAppConfigPath() . '/default.settings.yaml'));
+        $settings = array_keys(YAML::parseFile(Config::getConfigPath() . '/settings.yaml'));
+        $settings_globals = array_diff($settings, $defaults);
+        foreach ($settings_globals as $setting) {
+            $setting = ltrim($setting, '_');
+            $globals['settings'][$setting] = Config::get($setting);
         }
 
+        // Get a list of variables in _config/global.yaml
+        $site_globals = Config::getConfigPath() . '/global.yaml';
+        if (File::exists($site_globals)) {
+            $globals['global'] = YAML::parse($site_globals);
+        }
+
+        // Get a list of variables in the theme.yaml
         $theme_globals = Config::getCurrentThemePath() . 'theme.yaml';
         if (File::exists($theme_globals)) {
-            $globals = array_merge($globals, YAML::parse($theme_globals));
+            $globals['theme'] = YAML::parse($theme_globals);
         }
 
         if (count($globals) > 0) {
