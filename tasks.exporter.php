@@ -194,9 +194,7 @@ class Tasks_exporter extends Tasks
             $globals['theme'] = YAML::parse($theme_globals);
         }
 
-        if (count($globals) > 0) {
-            $this->migration['globals'] = $globals;
-        }
+        $this->migration['globals'] = $globals;
     }
 
     /**
