@@ -128,7 +128,7 @@ class Tasks_exporter extends Tasks
      */
     private function createSettings()
     {
-        $want = array(
+        $wants = array(
             'license_key',
             'site_root',
             'site_url',
@@ -141,7 +141,7 @@ class Tasks_exporter extends Tasks
             'content_type'
         );
 
-        foreach ($want as $want) {
+        foreach ($wants as $want) {
             $this->migration['settings'][$want] = Config::get($want);
         }
     }
