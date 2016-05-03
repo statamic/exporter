@@ -33,11 +33,13 @@ class Tasks_exporter extends Tasks
     public function migrate()
     {
         $this->c = $this->getCache();
+
         $this->collections = $this->getCollections();
 
         $this->createTaxonomies();
         $this->createSettings();
         $this->createGlobals();
+        $this->createFieldsets();
 
         foreach ($this->c['urls'] as $url => $data) {
             $key = $data['folder'] . ':' . $data['file'] . ':data';
@@ -170,6 +172,16 @@ class Tasks_exporter extends Tasks
         if (count($globals) > 0) {
             $this->migration['globals'] = $globals;
         }
+    }
+
+    /**
+     * Create fieldsets
+     *
+     * @return void
+     */
+    private function createFieldsets()
+    {
+        $this->migration['fieldsets'] = Statamic_Fieldset::get_list();
     }
 
     /**
