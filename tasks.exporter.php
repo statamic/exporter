@@ -212,10 +212,10 @@ class Tasks_exporter extends Tasks
         $collections = $this->getCollections();
         $type = $collections[$folder];
 
-        if ($type === 'date' && Config::getEntryTimestamps()) {
-            $order = substr($data['_basename'], 0, 15);
-        } elseif ($type === 'date') {
-            $order = substr($data['_basename'], 0, 10);
+        if ($type === 'date') {
+            $date_regex = '/^(.*)[\.-]' . $data['slug'] . '$/';
+            preg_match($date_regex, $data['_filename'], $date_matches);
+            $order = $date_matches[1];
         } elseif ($type === 'number') {
             $order = (int) $data['_order_key'];
         } else {
