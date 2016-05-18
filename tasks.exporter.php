@@ -33,22 +33,14 @@ class Tasks_exporter extends Tasks
     public function migrate()
     {
         $this->c = $this->getCache();
+
         $this->collections = $this->getCollections();
 
         $this->createTaxonomies();
         $this->createSettings();
         $this->createGlobals();
-
-        foreach ($this->c['urls'] as $url => $data) {
-            $key = $data['folder'] . ':' . $data['file'] . ':data';
-            $data = $this->arrayGet($this->c['content'], $key);
-
-            if ($this->isEntry($data)) {
-                $this->addEntry($data);
-            } else {
-                $this->addPage($data);
-            }
-        }
+        $this->createFieldsets();
+        $this->createPagesAndEntries();
 
         return $this->migration;
     }
@@ -65,6 +57,25 @@ class Tasks_exporter extends Tasks
         $cache = File::get($cache);
 
         return unserialize($cache);
+    }
+
+    /**
+     * Create pages and entries
+     *
+     * @return void
+     */
+    private function createPagesAndEntries()
+    {
+        foreach ($this->c['urls'] as $url => $data) {
+            $key = $data['folder'] . ':' . $data['file'] . ':data';
+            $data = $this->arrayGet($this->c['content'], $key);
+
+            if ($this->isEntry($data)) {
+                $this->addEntry($data);
+            } else {
+                $this->addPage($data);
+            }
+        }
     }
 
     /**
@@ -128,7 +139,7 @@ class Tasks_exporter extends Tasks
      */
     private function createSettings()
     {
-        $want = array(
+        $wants = array(
             'license_key',
             'site_root',
             'site_url',
@@ -141,7 +152,7 @@ class Tasks_exporter extends Tasks
             'content_type'
         );
 
-        foreach ($want as $want) {
+        foreach ($wants as $want) {
             $this->migration['settings'][$want] = Config::get($want);
         }
     }
@@ -155,21 +166,45 @@ class Tasks_exporter extends Tasks
      */
     private function createGlobals()
     {
-        $globals = array();
+        $globals = array(
+            'settings' => array(),
+            'global'   => array(),
+            'theme'    => array(),
+        );
 
+        // Get a list of variables added to _config/settings.yaml
+        // Anything not also in the defaults will be considered a global added manually.
+        $defaults = array_keys(YAML::parseFile(Config::getAppConfigPath() . '/default.settings.yaml'));
+        $settings = array_keys(YAML::parseFile(Config::getConfigPath() . '/settings.yaml'));
+        $settings_globals = array_diff($settings, $defaults);
+        foreach ($settings_globals as $setting) {
+            $setting = ltrim($setting, '_');
+            $globals['settings'][$setting] = Config::get($setting);
+        }
+
+        // Get a list of variables in _config/global.yaml
         $site_globals = Config::getConfigPath() . '/global.yaml';
         if (File::exists($site_globals)) {
-            $globals = array_merge($globals, YAML::parse($theme_globals));
+            $globals['global'] = YAML::parse($site_globals);
         }
 
+        // Get a list of variables in the theme.yaml
         $theme_globals = Config::getCurrentThemePath() . 'theme.yaml';
         if (File::exists($theme_globals)) {
-            $globals = array_merge($globals, YAML::parse($theme_globals));
+            $globals['theme'] = YAML::parse($theme_globals);
         }
 
-        if (count($globals) > 0) {
-            $this->migration['globals'] = $globals;
-        }
+        $this->migration['globals'] = $globals;
+    }
+
+    /**
+     * Create fieldsets
+     *
+     * @return void
+     */
+    private function createFieldsets()
+    {
+        $this->migration['fieldsets'] = Statamic_Fieldset::get_list();
     }
 
     /**
