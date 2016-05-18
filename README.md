@@ -3,7 +3,7 @@ A companion to Statamic 2's _Importer_. Could be useful for other reasons too.
 
 ## Usage
 - Install the addon by copying the files into `_add-ons/exporter`.
-- Visit the V2 importer and enter your V1 site's homepage, eg. `http://v1-site.com`
+- Visit the v2 importer and enter your v1 site's homepage, eg. `http://v1-site.com`
 
 ### Collections / Entries
 Collections will be created for every folder with a `fields.yaml` in it. So, make sure that all your entry folders
