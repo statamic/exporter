@@ -85,6 +85,11 @@ class Tasks_exporter extends Tasks
      */
     private function createTaxonomies()
     {
+        if (! isset($this->c['taxonomies'])) {
+            $this->migration['taxonomies'] = [];
+            return;
+        }
+        
         foreach ($this->c['taxonomies'] as $taxonomy_name => $terms) {
             $taxonomy = array();
 
