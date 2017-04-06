@@ -88,20 +88,10 @@ class Tasks_exporter extends Tasks
             return;
         }
         
+        $this->migration['taxonomies'] = array();
+        
         foreach ($this->c['taxonomies'] as $taxonomy_name => $terms) {
-            $taxonomy = array();
-
-            // Ignore empty taxonomies. They were probably just defined in
-            // settings but never actually used.
-            if (empty($terms)) {
-                continue;
-            }
-
-            foreach ($terms as $term) {
-                $taxonomy[] = $term['name'];
-            }
-
-            $this->migration['taxonomies'][$taxonomy_name] = $taxonomy;
+            $this->migration['taxonomies'][$taxonomy_name] = array();
         }
     }
 
