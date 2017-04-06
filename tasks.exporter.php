@@ -37,9 +37,7 @@ class Tasks_exporter extends Tasks
         $this->collections = $this->getCollections();
 
         $this->createTaxonomies();
-        $this->createSettings();
         $this->createGlobals();
-        $this->createFieldsets();
         $this->createPagesAndEntries();
 
         return $this->migration;
@@ -136,33 +134,6 @@ class Tasks_exporter extends Tasks
     }
 
     /**
-     * Get Settings
-     *
-     * Get all the site settings
-     *
-     * @return array
-     */
-    private function createSettings()
-    {
-        $wants = array(
-            'license_key',
-            'site_root',
-            'site_url',
-            'site_name',
-            'language',
-            'theme',
-            'date_format',
-            'time_format',
-            'timezone',
-            'content_type'
-        );
-
-        foreach ($wants as $want) {
-            $this->migration['settings'][$want] = Config::get($want);
-        }
-    }
-
-    /**
      * Get Globals & Theme Variables
      *
      * Create global variables from v1 globals and theme variables
@@ -200,16 +171,6 @@ class Tasks_exporter extends Tasks
         }
 
         $this->migration['globals'] = $globals;
-    }
-
-    /**
-     * Create fieldsets
-     *
-     * @return void
-     */
-    private function createFieldsets()
-    {
-        $this->migration['fieldsets'] = Statamic_Fieldset::get_list();
     }
 
     /**
