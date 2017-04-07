@@ -14,7 +14,7 @@ class Tasks_exporter extends Tasks
      *
      * @var array
      */
-    private $migration = array();
+    private $migration;
 
     /**
      * Collection data
@@ -24,6 +24,16 @@ class Tasks_exporter extends Tasks
      * @var array
      */
     private $collections;
+    
+    public function __construct()
+    {
+        $this->migration = array(
+            'pages' => array(),
+            'collections' => array(),
+            'taxonomies' => array(),
+            'globals' => array()
+        );
+    }
 
     /**
      * Create the Migration
