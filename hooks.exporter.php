@@ -4,7 +4,11 @@ class Hooks_exporter extends Hooks
 {
     public function exporter__export()
     {
-        $migration = $this->tasks->migrate();
+        try {
+            $migration = $this->tasks->migrate();
+        } catch (\Exception $e) {
+            die('Export failed with error: ' . $e->getMessage());
+        }
 
         $app = \Slim\Slim::getInstance();
 
